@@ -45,6 +45,7 @@ export default function PostNew(){
 
   const [errorTitle, setErrorTitle] = useState('');
   const [errorDescription, setErrorDescription] = useState('');
+  const [errorVdate,setErrorVdate]=useState('')
   const [errorImage, setErrorImage] = useState('');
   const [errorCheckbox, setErrorCheckbox] =  useState('');
 
@@ -67,7 +68,21 @@ export default function PostNew(){
   const handleDate=(event, selectedDate)=>{
     setShowDatePicker(Platform.OS=='ios');
     if(selectedDate!==undefined){
+
+      const date = new Date()
+      date.setUTCHours(0,0,0,0)
+      selectedDate.setUTCHours(0,0,0,0)
+      if(selectedDate<date){
+        console.log("invalid vdate")
+        setErrorVdate("Validity date is already expired")
+        setValidityDate(selectedDate)
+        console.log("valid vdate",errorVdate)
+      }
+      else{
+      setErrorVdate('')
+      console.log("valid vdate",errorVdate)
       setValidityDate(selectedDate);
+      }
     }
   };
   const handleStaffCheck = () =>{
@@ -105,7 +120,7 @@ export default function PostNew(){
             alert('Please select at least one option (Staff or Student).');
             return;
           }
-      if(!title || !description || !(staffChecked || studentChecked)){
+      if(!title || !description || !(staffChecked || studentChecked) || !errorVdate){
         Alert.alert('Validation Error', 'Please fill all the required fields.');
         return;
       }
@@ -152,11 +167,11 @@ export default function PostNew(){
       setValidityDate(new Date());
       setStaffChecked(false);
       setStudentChecked(false);
-      
+      setImageData(null)
       setErrorTitle('');
       setErrorDescription('');
       setErrorImage('');
-      setErrorCheckbox('');
+      setErrorVdate('');
     }
     else{
       console.error('Registration failed. Response:', response.data);
@@ -244,6 +259,7 @@ export default function PostNew(){
           <Text  style={styles.input}>
             {validityDate.toDateString()}
           </Text>
+          {errorVdate ? <Text style ={styles.error}> {errorVdate}</Text> : null}
           </TouchableOpacity>
           {
             showDatePicker && (

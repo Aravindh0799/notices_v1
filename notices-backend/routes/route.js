@@ -158,6 +158,27 @@ router.post('/newPost', upload.single('image'),async(req, res) => {
                 crop:'fill',
             })
             console.log(result.url)
+
+        try{
+            const directory = "/Users/aravindh/Documents/notices/notices_v1/notices-backend/uploads";
+
+            fs.readdir(directory, (err, files) => {
+              if (err) throw err;
+            
+              for (const file of files) {
+                fs.unlink(path.join(directory, file), (err) => {
+                  if (err) throw err;
+                });
+              }
+            });
+
+
+        console.log("tempfiles are deleted")
+        }
+        catch(err){
+            console.log("from deletion",err)
+        }
+        
         if(result.url){
 
             try{
