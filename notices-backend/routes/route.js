@@ -12,7 +12,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const staff = require('../schema/staff')
-
+const admin = require('../schema/admin')
 const upload = multer({ dest: 'uploads/' });
 
 const cloudinary = require('cloudinary');
@@ -83,11 +83,12 @@ router.post('/login',async(req,res)=>{
     try{
         const user = await student.findOne({email:email})
         const staffuser = await staff.findOne({email:email})
+        const adminuser = await admin.findOne({email:email})
         // console.log(user,"from try")
         // console.log(staffuser.name,"from try")
         if(user){
             if(await bcrypt.compare(password, user.password)){
-                console.log(user.password)
+                console.log("stud")
                 return res.json({
                     status:200,
                     dept:user.dept,
@@ -99,7 +100,7 @@ router.post('/login',async(req,res)=>{
                 console.log("inside staff")
             // if(await bcrypt.compare(password, staff.password)){
                 if(password===staffuser.password){
-                console.log(staffuser.password)
+                console.log("staff")
                 return res.json({
                     status:200,
                     dept:staffuser.dept,
@@ -107,6 +108,18 @@ router.post('/login',async(req,res)=>{
                 })
             }
         }
+
+        else if(adminuser){
+            console.log("inside admin")
+            if(password===adminuser.password){
+                console.log("admin")
+                return res.json({
+                    status:200,
+                    dept:"admin",
+                    message:"admin"
+                })
+        }
+    }
             else{
                 console.log("error")
                 return res.json({

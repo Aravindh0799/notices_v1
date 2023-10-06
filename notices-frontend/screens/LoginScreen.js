@@ -1,5 +1,5 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View,TouchableWithoutFeedback,Keyboard,Alert} from 'react-native'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import axios from 'axios'
 import { registerIndieID } from 'native-notify';
@@ -10,60 +10,73 @@ const LoginScreen = ({navigation,route}) => {
 
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
-    const [dept,setDept] = useState('')
-    const [aff,setAff] = useState('')
-    const handleLogin=()=>{
+ 
+
+    const handleLogin=async()=>{
 
         if(email && password){
-            instance.post('login',{
+            await instance.post('login',{
                 email:email,
                 password:password
             }).then((res)=>{
-                console.log(res.status,"from the login")
-                setDept(res.data.dept)
-                setAff(res.data.message)
-                console.log(aff)
-                if(res.status===200){
-                    Alert.alert(
                 
+                console.log(res.status,"from the login")
+                console.log(res.data.message,"from login")
+                
+                if(res.status===200){
+                    
+                    Alert.alert(
+                        
                         'success',
                         'wahooo!',
                         [
                             {
-                              text: 'OK', // Button text
+                                text: 'OK', // Button text
                             },
-                          ],
+                        ],
                         {
-                          cancelable: true,
+                            cancelable: true,
                         },
-                    )
-                    // registerIndieID(email, 10692, '7CUT8pcSuehhKc5ym5wZkD');
-                    console.log(aff)
-                    navigation.navigate('Home',{email:email,dept:dept,aff:aff})
-                }
-                else{
-                    Alert.alert(
-                
-                        'User not found',
-                        'Kindly register first',
-                        [
+                        )
+                        // registerIndieID(email, 10692, '7CUT8pcSuehhKc5ym5wZkD');
+                        
+
+                            if(res.data.message==='admin'){
+                                console.log("admin")
+                                
+                                navigation.navigate('NewPost')
+                            }
+                            else{
+                                console.log(res.data.message)
+                                
+                                navigation.navigate('Home',{email:email,dept:res.data.dept,aff:res.data.message})
+                            }
+                        
+                    }
+                    else{
+                        Alert.alert(
+                            
+                            'User not found',
+                            'Kindly register first',
+                            [
+                                {
+                                    text: 'OK', // Button text
+                                },
+                            ],
                             {
-                              text: 'OK', // Button text
+                                cancelable: true,
                             },
-                          ],
-                        {
-                          cancelable: true,
-                        },
-                    )
+                            )
+                        }
+                    }).catch((error)=>{
+                        console.log(error)
+                    })
                 }
-            }).catch((error)=>{
-                console.log(error)
-            })
-        }
-    }
-
-  return (
-
+            }
+            
+            // console.log('aff',aff)
+            return (
+                
     <KeyboardAwareScrollView>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     
