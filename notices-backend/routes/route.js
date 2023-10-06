@@ -239,13 +239,16 @@ router.post("/getnotices",async(req,res) =>{
     }
 
     notices.forEach(element => {
-        var nd = new Date(element.validityDate)
+        var nd =element.validityDate
         console.log(nd)
-        console.log(currdate)
-        if(currdate>nd){
+        
+        currdate.setUTCHours(0,0,0,0)
+        console.log(nd)
+        console.log(currdate.toDateString())
+        if(Date(currdate)>Date(nd)){
             console.log("exp")
         }
-        else if(currdate<nd){
+        else if(Date(currdate)<=Date(nd)){
             console.log("live")
             notcArray.push(element)
         }
@@ -264,5 +267,49 @@ router.post("/getnotices",async(req,res) =>{
         })
     }
 })
+
+router.post("/getAllNotices",async(req,res) =>{
+    const{dept,aff} = req.body;
+    console.log(aff)
+    var notices
+
+    notices = await poster.find()
+    console.log(notices)
+
+
+    if(notices){
+        // console.log(notices)
+        return res.json(notices)
+    }
+    else{
+        return res.json({
+            message:"not found"
+        })
+    }
+})
+
+
+router.post("/deletePost",async(req,res)=>{
+    const id = req.body.id
+    console.log(req.body)
+    try{
+    const result = await poster.deleteOne({_id:id})
+    console.log(result.deletedCount)
+
+    if(result.deletedCount==1){
+        return res.json({
+            message:"deleted"
+        })
+    }
+    }
+    catch(err){
+        return res.json({
+            message:"notDeleted"
+        })
+    }
+
+
+})
+
 
 module.exports=router

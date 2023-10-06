@@ -19,7 +19,7 @@ import axios from 'axios';
 import instance from '../components/axios';
 import ImagePickerComponent from '../components/imagepicker';
 
-export default function PostNew(){
+export default function PostNew({navigation,route}){
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [validityDate, setValidityDate] = useState(new Date());
@@ -31,6 +31,8 @@ export default function PostNew(){
   const [base64Image, setBase64Image] = useState(null);
 
   const [imageData, setImageData] = useState(null);
+  const aff = route.params.aff;
+  console.log("from post new",aff)
 
   const handleImageSelect = (image) => {
 
@@ -120,7 +122,7 @@ export default function PostNew(){
             alert('Please select at least one option (Staff or Student).');
             return;
           }
-      if(!title || !description || !(staffChecked || studentChecked) || !errorVdate){
+      if((!title || !description || !(staffChecked || studentChecked)&&(!errorVdate)) ){
         Alert.alert('Validation Error', 'Please fill all the required fields.');
         return;
       }
@@ -172,6 +174,7 @@ export default function PostNew(){
       setErrorDescription('');
       setErrorImage('');
       setErrorVdate('');
+      navigation.navigate("NewPost",{aff:aff})
     }
     else{
       console.error('Registration failed. Response:', response.data);
@@ -301,12 +304,30 @@ export default function PostNew(){
             <View style = {styles.container}>
                   <ImagePickerComponent onImageSelect={handleImageSelect} />
                 </View>
-
-              <View style={styles.button2}>
-              <Button title="Submit" onPress={handleSubmit} />
+            <View style={styles.btn}>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={handleSubmit}
+                    style={styles.button}
+                    >
+                <Text style={styles.buttonText}>Post</Text>
+                </TouchableOpacity>
 
               </View>
-          
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={()=>{
+                      navigation.navigate("AScreen",{aff:aff})
+                    }}
+                    style={[styles.button,styles.buttonOutline]}
+                    >
+                    
+                <Text style={styles.buttonOutlineText}>All notices</Text>
+                </TouchableOpacity>
+
+              </View>
+              </View>
     
     </ScrollView>
     </View> 
@@ -401,5 +422,39 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
   },
+  buttonContainer:{
+    width:'60%',
+    justifyContent:'center',
+    alignItems: 'center',
+    marginTop:5,
+},
+button:{
+    backgroundColor:'#0782F9',
+    width:'100%',
+    padding: 15,
+    borderRadius:10,
+    alignItems:'center',
+    marginBottom:15
+},
+buttonText:{
+  color:'white',
+  fontWeight:'700',
+  fontSize:16,
+},
+btn:{
+  alignItems:"center"
+},
+buttonOutline:{
+  backgroundColor:'white',
+  borderColor:'#0782F9',
+  borderWidth: 2,
+},
+
+buttonOutlineText:{
+  color:'#0782F9',
+  fontWeight:'700',
+  fontSize:16,
+},
+
 
 });

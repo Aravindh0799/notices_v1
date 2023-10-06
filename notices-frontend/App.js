@@ -14,6 +14,8 @@ import DScreen from './screens/DScreen';
 import PostNew from './screens/PostNew';
 import NewPost from './screens/NewPost';
 import NoticeScreen from './screens/NoticeScreen';
+import AScreen from './screens/AScreen';
+
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -31,6 +33,7 @@ export default function App() {
       <Stack.Screen options={{headerShown:false}} name="DScreen" component={DScreen} />
       <Stack.Screen options={{headerShown:false}} name="NoticeScreen" component={NoticeScreen} />
       <Stack.Screen options={{headerShown:false}} name="NewPost" component={PostNew} />
+      <Stack.Screen options={{headerShown:false}} name="AScreen" component={AScreen} />
       
       
       <Stack.Screen options={{headerShown:false}} name="Newpost" component={NewPost} />

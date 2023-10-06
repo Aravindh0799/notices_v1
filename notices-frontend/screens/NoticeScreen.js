@@ -14,8 +14,18 @@ const NoticeScreen = ({navigation,route}) => {
     const image = route.params.image
     const vdate = route.params.vdate
     const imageUri = image
-
+    const aff=route.params.aff
     const [isModalVisible, setIsModalVisible] = useState(false);
+    var dBtn = false
+    var id = null
+    
+    // console.log(aff)
+    if(aff==="admin"){
+      dBtn = true
+      console.log(aff)
+      id = route.params.id
+      console.log(id)
+    }
 
     const openModal = () => {
         // setSelectedImageIndex(index);
@@ -25,6 +35,36 @@ const NoticeScreen = ({navigation,route}) => {
       const closeModal = () => {
         setIsModalVisible(false);
       };
+
+
+      const handleDelete=(id)=>{
+        console.log(id)
+    
+        instance.post("deletePost",{id:id}).then(
+            (res)=>{
+                console.log(res.data.message)
+                if(res.data.message==="deleted"){
+                    console.log("jj")
+                    navigation.navigate('AScreen',{aff:aff})
+                }
+                else{
+                    console.log("delete unsuccessful")
+                    Alert.alert(
+                            
+                        'Delete unsuccessful',
+                        'Could not delete the post!',
+                        [
+                            {
+                                text: 'OK', // Button text
+                            },
+                        ],
+                        {
+                            cancelable: true,
+                        },
+                        )
+                }
+        })
+      }
 
 
   return (
@@ -53,6 +93,15 @@ const NoticeScreen = ({navigation,route}) => {
     <View style={styles.vdc}>
         <Text style={styles.vd}>Validity till: {vdate}</Text>
     </View>
+
+    {dBtn && (<View style={styles.dbtnContainer}>
+      <TouchableOpacity 
+                onPress={()=>{handleDelete(id)}}
+                style={styles.dButton}
+            >
+                <Text style={styles.delText}>Delete</Text>
+            </TouchableOpacity>
+    </View>)}
 
     
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -84,9 +133,9 @@ const styles = StyleSheet.create({
     topBar:{
         backgroundColor:"#0782F9",
         height:150,
-        width:390,
-        borderBottomLeftRadius:50,
-        borderBottomRightRadius:50,
+        width:'100%',
+        borderBottomLeftRadius:40,
+        borderBottomRightRadius:40,
         marginBottom:30,
         alignItems:'center',
             
@@ -94,7 +143,8 @@ const styles = StyleSheet.create({
     topText:{
         marginTop:50,
         fontSize:50,
-        color:'white'
+        color:'white',
+        
     },
 
     descContainer:{
@@ -114,7 +164,7 @@ const styles = StyleSheet.create({
     img:{
         height:300,
         width:300,
-        marginBottom:10,
+        marginBottom:20,
         borderRadius:10
     },
     vdc:{
@@ -123,9 +173,23 @@ const styles = StyleSheet.create({
         // backgroundColor:"blue",
         width:"80%",
 
-    }
+    },
 
-
+    dbtnContainer:{
+      alignItems:"center",
+      margin:10,
+  },
+  dButton:{
+      alignItems:'center',
+      borderRadius:5,
+      width:100,
+      marginTop:5,
+      backgroundColor:"red",
+      padding:7
+  },
+  delText:{
+      color:"white"
+  }
     
    
 

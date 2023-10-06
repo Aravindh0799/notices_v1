@@ -3,37 +3,83 @@ import React, { useEffect, useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import instance from '../components/axios';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
-
-const DScreen = ({navigation,route}) => {
-
-
-  let dName;
-  const email=route.params.email
-  const dept =route.params.dept
+const AScreen = ({navigation,route}) => {
+  
   const aff = route.params.aff
-  console.log(aff)
+    console.log("ascreen",aff)
   const [notices,setNotices] = useState("")
-  useEffect(()=>{
-    dName = route.params.dName
-    instance.post("getNotices",({dept:dName,aff:aff})).then(
-      (res)=>{
-        console.log(res.data,"image")
-        const temp = res.data
-        setNotices(temp)
-      }
-    )
+  const [notice,setNotice] = useState(false)
 
-  },[])
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Fetch data or perform any other necessary refresh actions here
+      instance.post("getAllNotices").then(
+        (res) => {
+          const temp = res.data;
+          setNotices(temp);
+          setNotice(!notice);
+        }
+      );
+
+    },[])
+  )
+//   useEffect(()=>{
+//     instance.post("getAllNotices").then(
+//       (res)=>{
+//         console.log(res.data,"image")
+//         const temp = res.data
+//         setNotices(temp)
+//     setNotice(!notice)
+
+
+//       }
+//     )
+ 
+//   },[])
+
+
+//   const handleDelete=(id)=>{
+//     console.log(id)
+
+//     instance.post("deletePost",{id:id}).then(
+//         (res)=>{
+//             console.log(res.data.message)
+//             if(res.data.message==="deleted"){
+//                 console.log("jj")
+//                 navigation.navigate('NewPost')
+//             }
+//             else{
+//                 console.log("delete unsuccessful")
+//                 Alert.alert(
+                        
+//                     'Delete unsuccessful',
+//                     'Could not delete the post!',
+//                     [
+//                         {
+//                             text: 'OK', // Button text
+//                         },
+//                     ],
+//                     {
+//                         cancelable: true,
+//                     },
+//                     )
+//             }
+//     })
+//   }
 
   const nlist = () =>{
+
     if(notices && Array.isArray(notices)){
   
     return notices.reverse().map(element=>{
     return(
             <TouchableOpacity
             onPress={()=>{
-              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff})
+              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff,id:element._id})
             }}>
             <View key={element._id} style={styles.cards}>
             <View style={styles.details}>
@@ -44,6 +90,14 @@ const DScreen = ({navigation,route}) => {
             <View style={styles.vdate}>
             <Text style={styles.dText}>Valid till : {element.validityDate}</Text>
             </View>
+            {/* <View style={styles.dbtnContainer}>
+            <TouchableOpacity 
+                onPress={()=>{handleDelete(element._id)}}
+                style={styles.dButton}
+            >
+                <Text style={styles.delText}>Delete</Text>
+            </TouchableOpacity> */}
+            {/* </View> */}
             </View>
             </TouchableOpacity>
             
@@ -79,7 +133,7 @@ const DScreen = ({navigation,route}) => {
 
 
     <View style={styles.topBar}>
-        <Text style={styles.topText}>{route.params.dName} </Text>
+        <Text style={styles.topText}>All Notices </Text>
     </View>
 
     <View style={styles.content}>
@@ -98,7 +152,7 @@ const DScreen = ({navigation,route}) => {
   )
 }
 
-export default DScreen
+export default AScreen
 
 
 const styles = StyleSheet.create({
@@ -175,6 +229,22 @@ const styles = StyleSheet.create({
     },
     np:{
       fontSize:20
+    },
+
+    dbtnContainer:{
+        alignItems:"center",
+        margin:10,
+    },
+    dButton:{
+        alignItems:'center',
+        borderRadius:5,
+        width:60,
+        marginTop:5,
+        backgroundColor:"red",
+        padding:7
+    },
+    delText:{
+        color:"white"
     }
 
 })

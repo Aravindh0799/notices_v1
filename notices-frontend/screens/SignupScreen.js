@@ -353,9 +353,9 @@ selectOption:{
 topBar:{
     backgroundColor:"#0782F9",
     height:250,
-    width:390,
-    borderBottomLeftRadius:50,
-    borderBottomRightRadius:50,
+    width:'100%',
+    borderBottomLeftRadius:40,
+    borderBottomRightRadius:40,
     marginBottom:30,
 }
 

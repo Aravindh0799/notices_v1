@@ -44,7 +44,7 @@ const LoginScreen = ({navigation,route}) => {
                             if(res.data.message==='admin'){
                                 console.log("admin")
                                 
-                                navigation.navigate('NewPost')
+                                navigation.navigate('NewPost',{aff:'admin'})
                             }
                             else{
                                 console.log(res.data.message)
@@ -195,9 +195,9 @@ inner:{
 topBar:{
     backgroundColor:"#0782F9",
     height:350,
-    width:390,
-    borderBottomLeftRadius:50,
-    borderBottomRightRadius:50,
+    width:'100%',
+    borderBottomLeftRadius:40,
+    borderBottomRightRadius:40,
     marginBottom:30,
 
 },
