@@ -18,13 +18,21 @@ const NoticeScreen = ({navigation,route}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     var dBtn = false
     var id = null
+    var stud = null
+    var staff = null
     
     // console.log(aff)
     if(aff==="admin"){
       dBtn = true
       console.log(aff)
       id = route.params.id
+      stud = route.params.stud
+      staff = route.params.staff
+
       console.log(id)
+      console.log("stud:",stud)
+      console.log("staff:",staff)
+
     }
 
     const openModal = () => {
@@ -91,17 +99,28 @@ const NoticeScreen = ({navigation,route}) => {
     </View>
 
     <View style={styles.vdc}>
-        <Text style={styles.vd}>Validity till: {vdate}</Text>
+        <Text style={styles.vd}>Valid till: {vdate}</Text>
     </View>
 
-    {dBtn && (<View style={styles.dbtnContainer}>
+    {dBtn && 
+    (<View style={styles.Bottomcontainer}>
+    <View style={styles.postDetails}>
+      <Text>Posted for: {stud=="true"?(staff=="false"?"Student":"Both"):"Faculty"}</Text>
+    </View>
+    <View style={styles.dbtnContainer}>
       <TouchableOpacity 
                 onPress={()=>{handleDelete(id)}}
                 style={styles.dButton}
             >
                 <Text style={styles.delText}>Delete</Text>
             </TouchableOpacity>
-    </View>)}
+    </View>
+    
+    </View>
+    
+    )}
+
+
 
     
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -176,6 +195,7 @@ const styles = StyleSheet.create({
     },
 
     dbtnContainer:{
+
       alignItems:"center",
       margin:10,
   },
@@ -189,6 +209,13 @@ const styles = StyleSheet.create({
   },
   delText:{
       color:"white"
+  },
+  postDetails:{
+    alignItems:'flex-end'
+  },
+  Bottomcontainer:{
+
+    width:'80%'
   }
     
    

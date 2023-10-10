@@ -11,8 +11,7 @@ const AScreen = ({navigation,route}) => {
     console.log("ascreen",aff)
   const [notices,setNotices] = useState("")
   const [notice,setNotice] = useState(false)
-
-
+  var date = new Date()
 
   useFocusEffect(
     React.useCallback(() => {
@@ -27,51 +26,9 @@ const AScreen = ({navigation,route}) => {
 
     },[])
   )
-//   useEffect(()=>{
-//     instance.post("getAllNotices").then(
-//       (res)=>{
-//         console.log(res.data,"image")
-//         const temp = res.data
-//         setNotices(temp)
-//     setNotice(!notice)
-
-
-//       }
-//     )
- 
-//   },[])
-
-
-//   const handleDelete=(id)=>{
-//     console.log(id)
-
-//     instance.post("deletePost",{id:id}).then(
-//         (res)=>{
-//             console.log(res.data.message)
-//             if(res.data.message==="deleted"){
-//                 console.log("jj")
-//                 navigation.navigate('NewPost')
-//             }
-//             else{
-//                 console.log("delete unsuccessful")
-//                 Alert.alert(
-                        
-//                     'Delete unsuccessful',
-//                     'Could not delete the post!',
-//                     [
-//                         {
-//                             text: 'OK', // Button text
-//                         },
-//                     ],
-//                     {
-//                         cancelable: true,
-//                     },
-//                     )
-//             }
-//     })
-//   }
-
   const nlist = () =>{
+
+
 
     if(notices && Array.isArray(notices)){
   
@@ -79,7 +36,7 @@ const AScreen = ({navigation,route}) => {
     return(
             <TouchableOpacity
             onPress={()=>{
-              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff,id:element._id})
+              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff,id:element._id,stud:element.studentChecked,staff:element.staffChecked})
             }}>
             <View key={element._id} style={styles.cards}>
             <View style={styles.details}>
@@ -88,7 +45,13 @@ const AScreen = ({navigation,route}) => {
             <Image  style={styles.image} src={element.image}/>
             </View>
             <View style={styles.vdate}>
-            <Text style={styles.dText}>Valid till : {element.validityDate}</Text>
+            {/* <Text style={styles.dText}>Valid till : {element.validityDate}</Text> */}
+            <Text style={styles.dText}>Validity: {
+                
+                (((Date.parse(date))<=(Date.parse((element.validityDate))))?"Valid":"Expired")
+                
+            }</Text>
+
             </View>
             {/* <View style={styles.dbtnContainer}>
             <TouchableOpacity 
