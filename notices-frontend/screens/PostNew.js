@@ -22,7 +22,11 @@ import ImagePickerComponent from '../components/imagepicker';
 export default function PostNew({navigation,route}){
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [referenceId, setReferenceId] = useState('');
+  const [circularDate, setCircularDate] = useState(new Date());
   const [validityDate, setValidityDate] = useState(new Date());
+  const [showValidityDatePicker, setShowValidityDatePicker] = useState(false);
+  const [showCircularDatePicker, setShowCircularDatePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [staffChecked, setStaffChecked] = useState(false);
   const [studentChecked, setStudentChecked] = useState(false);
@@ -38,6 +42,14 @@ export default function PostNew({navigation,route}){
 
     setImageData(image);
     console.log("from np",image)
+  };
+
+  const toggleCircularDatePicker = () => {
+    setShowCircularDatePicker(!showCircularDatePicker);
+  };
+
+  const toggleValidityDatePicker = () => {
+    setShowValidityDatePicker(!showValidityDatePicker);
   };
 
   const [isChecked, setIsChecked] = useState({
@@ -67,26 +79,34 @@ export default function PostNew({navigation,route}){
     setShowDatePicker(!showDatePicker);
   }
 
-  const handleDate=(event, selectedDate)=>{
-    setShowDatePicker(Platform.OS=='ios');
-    if(selectedDate!==undefined){
+  const handleValidityDate=(event, selectedValidityDate)=>{
+    setShowValidityDatePicker(Platform.OS=='ios');
+    if(selectedValidityDate!==undefined){
 
       const date = new Date()
       date.setUTCHours(0,0,0,0)
-      selectedDate.setUTCHours(0,0,0,0)
-      if(selectedDate<date){
+      selectedValidityDate.setUTCHours(0,0,0,0)
+      if(selectedValidityDate < date){
         console.log("invalid vdate")
         setErrorVdate("Validity date is already expired")
-        setValidityDate(selectedDate)
+        setValidityDate(selectedValidityDate)
         console.log("valid vdate",errorVdate)
       }
       else{
       setErrorVdate('')
       console.log("valid vdate",errorVdate)
-      setValidityDate(selectedDate);
+      setValidityDate(selectedValidityDate);
       }
     }
   };
+
+  const handleCircularDate= (event, selectedCDate) => {
+    setShowCircularDatePicker(Platform.OS =='ios');
+    if(selectedCDate !== undefined){
+      setCircularDate(selectedCDate);
+    }
+  };
+
   const handleStaffCheck = () =>{
     setStaffChecked(staffChecked);
     
@@ -134,9 +154,10 @@ export default function PostNew({navigation,route}){
           type: 'image/jpeg',
           name: 'image.jpg',
         });
-
+        formData.append('referenceId', referenceId)
         formData.append('title',title)
         formData.append('description',description)
+        formData.append('circularDate',circularDate.toCDateString())
         formData.append('validityDate',validityDate.toDateString())
         formData.append('staffChecked',staffChecked)
         formData.append('studentChecked',studentChecked)
@@ -164,8 +185,10 @@ export default function PostNew({navigation,route}){
     if( response.data.message === 'success'){
       console.log("Success");
       Alert.alert("Submitted successfully. Kindly wait 5 mins to reflect");
+      setReferenceId('');
       setTitle('');
       setDescription('');
+      setCircularDate(new Date());
       setValidityDate(new Date());
       setStaffChecked(false);
       setStudentChecked(false);
@@ -202,10 +225,10 @@ export default function PostNew({navigation,route}){
 };
 
   // const pickImageAndConvertToBase64v1 = async () => {
-  //   // Request permission to access the device's image library
+  //  // Request permission to access the device's image library
   //   console.log("entered image ")
   //  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //   console.log(status)
+  // //   console.log(status)
   //   if (status !== 'granted') {
   //     console.error('Permission to access image library denied');
   //     return;
@@ -216,17 +239,17 @@ export default function PostNew({navigation,route}){
   //     quality: 1,
   //     base64: true, // Set this option to true to include base64 data
   //   });
-  //  console.log(result)  
+  // //  console.log(result)  
   //   if (!result.canceled) {
   //     const base64String = result.assets[0].base64; // Base64 representation of the selected image
   //     setBase64Image(base64String);
   //     setImage(base64String)
   //   }
   //   else{
-  //     setImage(null)
-  //   }
-  //   console.log('from the base function',base64Image)
-  // };
+  //      setImage(null)
+  //    }
+  //    console.log('from the base function',base64Image)
+  //  };
 
 
   return (
@@ -234,6 +257,14 @@ export default function PostNew({navigation,route}){
     <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}> New Circular</Text>
         <View style={styles.inputContainer}>
+         {/*Reference number */}
+         <Text style={styles.label}>Reference ID</Text>
+         <TextInput
+              style={styles.input}
+              onChangeText={(text) => setReferenceId(text)}
+              value={referenceId}
+              placeholder="Enter Reference Id"
+          />
          {/* Title */}
           <Text style={styles.label}>Title:</Text>
           <TextInput
@@ -256,24 +287,48 @@ export default function PostNew({navigation,route}){
           {errorDescription ? <Text style ={styles.error}> {errorDescription}</Text> : null}
         </View>
 
-          {/* Validity Date */}
+        {/*Circular Date */}
+            <View>
+            <Text style={styles.label}>Circular Date:</Text>
+              <TouchableOpacity onPress={toggleCircularDatePicker}>
+                <Text style={styles.input}>
+                  {circularDate.toDateString()}
+                </Text>
+                {/* {errorCdate ? <Text style={styles.error}>{errorCdate}</Text> : null} */}
+              </TouchableOpacity>
+              {
+                showCircularDatePicker && (
+                  <DateTimePicker
+                  value={circularDate}
+                  mode="date"
+                  placeholder="default"
+                  onChange={handleCircularDate}
+                  />
+                )
+              }
+            </View>
+
+        {/* Validity Date */}
+          <View>
           <Text style={styles.label}>Validity Date:</Text>
-          <TouchableOpacity onPress={toggleDatePicker}>
+          <TouchableOpacity onPress={toggleValidityDatePicker}>
           <Text  style={styles.input}>
             {validityDate.toDateString()}
           </Text>
           {errorVdate ? <Text style ={styles.error}> {errorVdate}</Text> : null}
           </TouchableOpacity>
           {
-            showDatePicker && (
+            showValidityDatePicker && (
               <DateTimePicker
                 value={validityDate}
                 mode="date"
                 placeholder="default"
-                onChange={handleDate}
+                onChange={handleValidityDate}
                 />
             )
           }
+          </View>
+
           {/*Checkboxes Staff / Student*/}
           <Text style={styles.labelCheck}> Post To :</Text>
             <View style={styles.checkboxContainer}>
@@ -303,7 +358,12 @@ export default function PostNew({navigation,route}){
 
             <View style = {styles.container}>
                   <ImagePickerComponent onImageSelect={handleImageSelect} />
-                </View>
+            </View>
+            {/* <TouchableOpacity onPress={() => {
+              console.log('Button pressed');
+              pickImageAndConvertToBase64v1();
+            }}><Text>Pick an image from your library</Text></TouchableOpacity> */}
+
             <View style={styles.btn}>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
@@ -444,6 +504,7 @@ buttonText:{
 btn:{
   alignItems:"center"
 },
+
 buttonOutline:{
   backgroundColor:'white',
   borderColor:'#0782F9',
