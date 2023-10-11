@@ -143,11 +143,13 @@ router.post('/newPost', upload.single('image'),async(req, res) => {
         // Access other form fields via req.body
         console.log("path",req.file.path)
         console.log(req.body)
+        const ref = req.body.referenceId
         const title = req.body.title
         const description = req.body.description
         const validityDate = req.body.validityDate
         const staffChecked = req.body.staffChecked
         const studentChecked = req.body.studentChecked
+        const circularDate =req.body.circularDate
         
         console.log("hello")
         const result = await cloudinary.uploader.upload(req.file.path,
@@ -183,11 +185,13 @@ router.post('/newPost', upload.single('image'),async(req, res) => {
 
             try{
                 const data = await new poster({
+                    referenceId:ref,
                     title:title,
                     description:description,
                     validityDate:validityDate,
                     staffChecked:staffChecked,
                     studentChecked:studentChecked,
+                    circularDate:circularDate,
                     dept:'MCA',
                     image:result.url
                 })

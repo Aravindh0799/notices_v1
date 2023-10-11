@@ -157,7 +157,7 @@ export default function PostNew({navigation,route}){
         formData.append('referenceId', referenceId)
         formData.append('title',title)
         formData.append('description',description)
-        formData.append('circularDate',circularDate.toCDateString())
+        formData.append('circularDate',circularDate.toDateString())
         formData.append('validityDate',validityDate.toDateString())
         formData.append('staffChecked',staffChecked)
         formData.append('studentChecked',studentChecked)

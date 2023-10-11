@@ -23,7 +23,7 @@ const LoginScreen = ({navigation,route}) => {
                 console.log(res.status,"from the login")
                 console.log(res.data.message,"from login")
                 
-                if(res.status===200){
+                if(res.data.status===200){
                     
                     Alert.alert(
                         
