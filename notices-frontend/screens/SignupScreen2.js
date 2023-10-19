@@ -21,6 +21,7 @@ const SignupScreen2 = ({navigation,route}) => {
     const [dept,setDept]=useState('')
     const [year,setYear]=useState('')
     const [selected, setSelected] = React.useState("");
+    
 
 
     const data = [

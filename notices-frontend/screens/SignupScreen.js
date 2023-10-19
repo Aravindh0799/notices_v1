@@ -8,10 +8,6 @@ import {TextInput, TouchableOpacity,
     Keyboard,
     Alert,} from 'react-native'
 import React,{useState} from 'react'
-import axios from 'axios'
-import Dropdown from '../components/dropdown'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Pressable} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { SelectList } from 'react-native-dropdown-select-list'
 import instance from '../components/axios';
@@ -21,7 +17,7 @@ const SignupScreen = ({navigation}) => {
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
     const [cpassword,setCpassword]=useState('')
-    
+    const [roll,setRoll] = useState('')
     const [validPassword,setValidPassword]=useState(true)
 
     const [isValidEmail,setIsValidEmail]=useState(true)
@@ -31,7 +27,7 @@ const SignupScreen = ({navigation}) => {
 
     const data= [
         {key:'1', value:'MCA'},
-        {key:'2', value:'EEE'},
+        {key:'2', value:'Applied Science'}
     ]
 
     const validateEmail = ()=>{
@@ -93,6 +89,7 @@ const SignupScreen = ({navigation}) => {
         email:email,
         password:password,
         dept:dept,
+        rollno:roll
         }
         ).then((res)=>{
             console.log(res.message,"from the backend")
@@ -142,6 +139,15 @@ const SignupScreen = ({navigation}) => {
         placeholder='Name'
         value={name}
         onChangeText={text=>setName(text)}
+        style={styles.input}
+        />
+    </View>
+
+    <View style={styles.inputContainer}>
+        <TextInput 
+        placeholder='Roll No'
+        value={roll}
+        onChangeText={text=>setRoll(text)}
         style={styles.input}
         />
     </View>

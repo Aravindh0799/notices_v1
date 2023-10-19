@@ -19,7 +19,7 @@ const AScreen = ({navigation,route}) => {
       instance.post("getAllNotices").then(
         (res) => {
           const temp = res.data;
-          setNotices(temp);
+          setNotices(temp.reverse());
           setNotice(!notice);
         }
       );
@@ -32,11 +32,13 @@ const AScreen = ({navigation,route}) => {
 
     if(notices && Array.isArray(notices)){
   
-    return notices.reverse().map(element=>{
+    return notices.map(element=>{
     return(
             <TouchableOpacity
             onPress={()=>{
-              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff,id:element._id,stud:element.studentChecked,staff:element.staffChecked})
+              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,
+                vdate:element.validityDate,aff:aff,id:element._id,stud:element.studentChecked,staff:element.staffChecked,
+                pstDate:element.circularDate,dept:element.dept,read:element.readBy})
             }}>
             <View key={element._id} style={styles.cards}>
             <View style={styles.details}>

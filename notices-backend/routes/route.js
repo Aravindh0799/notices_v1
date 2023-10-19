@@ -30,7 +30,7 @@ cloudinary.v2.config({
 
 
 router.post('/register',async(req,res)=>{
-    const{name,email,password,resiStatus,dob,dept,year,religion,nationality,address} = req.body;
+    const{name,email,password,dept,rollno} = req.body;
     const encryptedPassword = await bcrypt.hash(password,10);
     try{
     console.log(req.body,encryptedPassword)
@@ -49,6 +49,7 @@ router.post('/register',async(req,res)=>{
         email:email,
         password:encryptedPassword,
         dept:dept,
+        rollno:rollno
     }
         
     )
@@ -115,7 +116,7 @@ router.post('/login',async(req,res)=>{
                 console.log("admin")
                 return res.json({
                     status:200,
-                    dept:"admin",
+                    dept:adminuser.dept,
                     message:"admin"
                 })
         }
@@ -150,6 +151,7 @@ router.post('/newPost', upload.single('image'),async(req, res) => {
         const staffChecked = req.body.staffChecked
         const studentChecked = req.body.studentChecked
         const circularDate =req.body.circularDate
+        const dept = req.body.dept
         
         console.log("hello")
         const result = await cloudinary.uploader.upload(req.file.path,
@@ -192,7 +194,7 @@ router.post('/newPost', upload.single('image'),async(req, res) => {
                     staffChecked:staffChecked,
                     studentChecked:studentChecked,
                     circularDate:circularDate,
-                    dept:'MCA',
+                    dept:dept,
                     image:result.url
                 })
                 const result1 = await data.save();
@@ -312,6 +314,71 @@ router.post("/deletePost",async(req,res)=>{
         })
     }
 
+
+})
+
+
+router.post('/updateRead',async(req,res)=>{
+    const {id,email}=req.body
+    console.log(req.body)
+
+    const result = await poster.findOne({_id:id})
+    console.log(result)
+    var readtemp = result.readBy
+    var read = null
+    var flag = false
+    console.log("readtemp",readtemp)
+    if(!readtemp){
+        var d = new Date().toString()
+        var date = d.split(' ').splice(0, 5).join(' ')
+        read = email +' - '+date
+        flag=true
+    }
+    else{
+        var arr = readtemp.split(",")
+        console.log("arr",arr)
+        console.log(email)
+        var tempres = arr.includes(email)
+
+        if(tempres){
+            console.log('already existing email')
+        }
+        else{
+            flag = true 
+            var d = new Date().toString()
+            var date = d.split(' ').splice(0, 5).join(' ')
+            console.log(date)
+            read = readtemp + ',' + email + ' - ' + date
+        }
+    }
+    console.log(read)
+    if(result && flag){
+        const temp = await poster.updateOne({readBy:readtemp},{readBy: read})
+
+        if(temp.modifiedCount){
+            return res.json({
+                message:'success'
+            })
+        }
+        else{
+            return res.json({
+                message:'update failed'
+            })
+        }
+    }
+
+    else if(!flag){
+        console.log('email found')
+        return res.json({
+            message:'email already exists'
+        })
+
+    }
+    else{
+        return res.json({
+            message:'no post found'
+        })
+    }
 
 })
 

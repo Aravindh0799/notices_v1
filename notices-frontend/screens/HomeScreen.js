@@ -15,7 +15,7 @@ const HomeScreen = ({navigation,route}) => {
   const email = route.params.email
   const dept = route.params.dept
   const aff = route.params.aff
-  console.log(aff)
+  console.log(dept)
   const deptList = () =>{
     return departments.map(element => {
       return (

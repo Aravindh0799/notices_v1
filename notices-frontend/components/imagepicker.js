@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, Image, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const ImagePickerComponent = ({ onImageSelect }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  
+  useFocusEffect(React.useCallback(()=>{(
+    setSelectedImage(null)
+  )
+  },[])
+  )
+
+  console.log(onImageSelect)
+
 
   const pickImage = async () => {
     try {

@@ -44,7 +44,7 @@ const LoginScreen = ({navigation,route}) => {
                             if(res.data.message==='admin'){
                                 console.log("admin")
                                 
-                                navigation.navigate('NewPost',{aff:'admin'})
+                                navigation.navigate('NewPost',{aff:'admin',dept:res.data.dept})
                             }
                             else{
                                 console.log(res.data.message)

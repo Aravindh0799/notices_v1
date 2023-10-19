@@ -33,7 +33,12 @@ const DScreen = ({navigation,route}) => {
     return(
             <TouchableOpacity
             onPress={()=>{
-              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff})
+              instance.post('updateRead',({id:element._id,email:email})).then(
+                (res)=>{
+                  console.log(res.data.message)
+                }
+              )
+              navigation.navigate("NoticeScreen",{title:element.title,desc:element.description,image:element.image,vdate:element.validityDate,aff:aff,dept:element.dept})
             }}>
             <View key={element._id} style={styles.cards}>
             <View style={styles.details}>

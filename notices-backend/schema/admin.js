@@ -13,6 +13,10 @@ const admin = new mongoose.Schema({
         type:String,
         required:true
     },
+    dept:{
+        type:String,
+        required:true
+    }
    
     
 })

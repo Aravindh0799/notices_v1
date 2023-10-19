@@ -5,6 +5,7 @@ import instance from '../components/axios';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ImageModal from '../components/imageModal';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const NoticeScreen = ({navigation,route}) => {
@@ -20,7 +21,10 @@ const NoticeScreen = ({navigation,route}) => {
     var id = null
     var stud = null
     var staff = null
-    
+    var pstDate = null
+    var dept = null
+    var read = null
+    var array = []
     // console.log(aff)
     if(aff==="admin"){
       dBtn = true
@@ -28,12 +32,25 @@ const NoticeScreen = ({navigation,route}) => {
       id = route.params.id
       stud = route.params.stud
       staff = route.params.staff
-
-      console.log(id)
+      pstDate = route.params.pstDate
+      dept = route.params.dept
+      read = route.params.read
+      if(read){
+        array = read.split(",")
+      }
+      console.log("arr",array)
       console.log("stud:",stud)
       console.log("staff:",staff)
 
     }
+
+    useFocusEffect(
+      React.useCallback(() => {
+        // Fetch data or perform any other necessary refresh actions here
+        array = null
+        console.log("no value")
+      },[])
+    )
 
     const openModal = () => {
         // setSelectedImageIndex(index);
@@ -75,6 +92,38 @@ const NoticeScreen = ({navigation,route}) => {
       }
 
 
+      const readlist = () =>{
+
+        if(array.length!=0){
+          console.log("read",array,array.length)
+          return array.reverse().map(element=>{
+            return(
+              <Text>{element}</Text>
+              )
+            })
+          }
+          else{
+        array = []
+      }
+      }
+
+      const empty = ()=>{
+        console.log(array.length)
+        if(array.length===0){
+          console.log("empto")
+          return(
+            <View>
+            <Text>No views yet</Text>
+            </View>
+          )
+        }
+        else{
+
+        }
+    
+      }
+
+
   return (
     <KeyboardAwareScrollView>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -105,17 +154,46 @@ const NoticeScreen = ({navigation,route}) => {
     {dBtn && 
     (<View style={styles.Bottomcontainer}>
     <View style={styles.postDetails}>
+      <Text>Posted Date: {pstDate}</Text>
       <Text>Posted for: {stud=="true"?(staff=="false"?"Student":"Both"):"Faculty"}</Text>
+      <Text>Department: {dept}</Text>
     </View>
     <View style={styles.dbtnContainer}>
       <TouchableOpacity 
-                onPress={()=>{handleDelete(id)}}
+                onPress={ ()=>{
+                  Alert.alert(
+                            
+                    'Delete post',
+                    'Are you sure?',
+                    [
+                        {
+                            text: 'Delete', // Button text
+                            onPress:()=>{handleDelete(id)}
+                        },
+                        {
+                          text: 'Cancel',
+                          
+                        }
+                    ],
+                    {
+                        cancelable: true,
+                    },
+                    )
+                  }
+                  
+                  }
                 style={styles.dButton}
             >
                 <Text style={styles.delText}>Delete</Text>
             </TouchableOpacity>
     </View>
-    
+    <View>
+      <Text style={styles.rd}>Read By: </Text>
+      {readlist()}
+      </View>
+    <View>
+      {empty()}
+    </View>
     </View>
     
     )}
@@ -216,6 +294,11 @@ const styles = StyleSheet.create({
   Bottomcontainer:{
 
     width:'80%'
+  },
+
+  rd:{
+    fontSize:20,
+    fontWeight:"800"
   }
     
    

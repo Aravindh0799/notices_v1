@@ -30,12 +30,16 @@ const postSchema = new mongoose.Schema({
     },
     dept:{
         type:String,
-        
-        default:"MCA"
+        required:true,
     },
     image:{
         type:String,
         required:false,
+    },
+    readBy:{
+        type:String,
+        required:false,
+        default:""
     }
 
 })

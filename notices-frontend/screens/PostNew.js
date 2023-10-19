@@ -18,6 +18,8 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import instance from '../components/axios';
 import ImagePickerComponent from '../components/imagepicker';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function PostNew({navigation,route}){
   const [title, setTitle] = useState('');
@@ -37,6 +39,21 @@ export default function PostNew({navigation,route}){
   const [imageData, setImageData] = useState(null);
   const aff = route.params.aff;
   console.log("from post new",aff)
+
+  const dept = route.params.dept
+  console.log("from post",dept)
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("focus effect")
+      // Fetch data or perform any other necessary refresh actions here
+      // handleImageSelect(null)
+      
+    }
+  
+    ,[])
+  )
+  
 
   const handleImageSelect = (image) => {
 
@@ -161,6 +178,7 @@ export default function PostNew({navigation,route}){
         formData.append('validityDate',validityDate.toDateString())
         formData.append('staffChecked',staffChecked)
         formData.append('studentChecked',studentChecked)
+        formData.append('dept',dept)
 
         const response = await instance.post('/newPost', formData,  {
           // body: formData,
@@ -184,7 +202,8 @@ export default function PostNew({navigation,route}){
     console.log('resopnse', response.data);
     if( response.data.message === 'success'){
       console.log("Success");
-      Alert.alert("Submitted successfully. Kindly wait 5 mins to reflect");
+      Alert.alert("Submitted successfully. Kindly wait 5 mins to reflect.");
+      navigation.navigate('NewPost',{aff:aff})
       setReferenceId('');
       setTitle('');
       setDescription('');
@@ -193,11 +212,12 @@ export default function PostNew({navigation,route}){
       setStaffChecked(false);
       setStudentChecked(false);
       setImageData(null)
+    
       setErrorTitle('');
       setErrorDescription('');
       setErrorImage('');
       setErrorVdate('');
-      navigation.navigate("NewPost",{aff:aff})
+      console.log("from success")
     }
     else{
       console.error('Registration failed. Response:', response.data);
@@ -265,6 +285,7 @@ export default function PostNew({navigation,route}){
               value={referenceId}
               placeholder="Enter Reference Id"
           />
+          {true ? <Text></Text>:null}
          {/* Title */}
           <Text style={styles.label}>Title:</Text>
           <TextInput
@@ -307,6 +328,7 @@ export default function PostNew({navigation,route}){
                 )
               }
             </View>
+            {true ? <Text></Text>:null}
 
         {/* Validity Date */}
           <View>
